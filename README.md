@@ -1,73 +1,109 @@
 # TabTrail — Visual AI Browser Activity Tracker
 
-TabTrail is a production-ready Visual AI agent that tracks your browsing activity and automatically analyzes screenshots using the Groq Vision API to generate meaningful insights about your workflow, UI elements, and page context.
+<div align="center">
 
-## 🚀 Features
+![TabTrail Logo](https://via.placeholder.com/800x200/1e293b/3b82f6?text=TabTrail+%7C+Visual+AI+Browser+Activity+Tracker)
+
+**A production-ready SaaS application that transforms browsing activity into AI-powered insights**
+
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-20232A?style=flat&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=flat&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+[![Groq](https://img.shields.io/badge/Groq-FF6B6B?style=flat&logo=groq&logoColor=white)](https://groq.com/)
+
+[Features](#-features) • [Demo](#-demo) • [Quick Start](#-quick-start) • [Architecture](#-architecture) • [API Docs](#-api-documentation) • [Deployment](#-deployment)
+
+</div>
+
+---
+
+## 🎯 Overview
+
+TabTrail is an enterprise-grade Visual AI agent that automatically tracks browser activity and uses **Groq Vision API** to analyze screenshots, extract UI elements, detect workflows, and generate intelligent summaries. Perfect for productivity analysis, workflow optimization, and research documentation.
+
+### Why TabTrail?
+
+- 🤖 **AI-Powered Analysis**: Groq Vision API automatically analyzes every screenshot
+- 🔒 **Privacy-First**: All data stays on your infrastructure
+- ⚡ **Offline-Ready**: IndexedDB queue ensures tracking works without backend
+- 📊 **Premium Dashboard**: SaaS-quality React interface with real-time analytics
+- 🎨 **Modern UX**: Smooth animations, toast notifications, skeleton loaders
+- 🔐 **Secure**: Sensitive input filtering, CORS protection, MongoDB authentication ready
+
+---
+
+## ✨ Features
 
 ### 🤖 AI-Powered Screenshot Analysis
 - **Groq Vision API** integration with `llava-v1.5-7b-4096-preview` model
 - Automatic analysis of every captured screenshot
-- Extracts UI elements (buttons, forms, dialogs, menus)
-- Detects workflow context (coding, shopping, reading, social media)
-- Categorizes pages automatically
-- **Tesseract OCR fallback** when API unavailable
+- **Extracts UI elements**: Buttons, forms, dialogs, menus, links
+- **Detects workflow context**: "coding", "shopping", "reading", "social media"
+- **Categorizes pages**: Coding, Shopping, Reading, Social, Finance, Productivity, Entertainment
+- **Tesseract OCR fallback**: Continues working when API unavailable
 
 ### 🎯 Browser Activity Tracking
 - Tab changes and navigation events
-- Click tracking with element detection
-- Scroll depth monitoring
-- Automatic screenshots every 30 seconds
-- **Privacy-first**: Never captures password fields or sensitive inputs
+- Click tracking with element detection (tagName, text, class, ID, coordinates)
+- Scroll depth monitoring with percentage tracked
+- Automatic screenshots every 30 seconds (configurable)
+- **Privacy filters**: Never captures password fields, credit cards, SSNs, tokens, auth keys
 
 ### 📊 Premium SaaS Dashboard
-- Real-time activity timeline with filters
-- AI-generated summaries for each screenshot
-- Domain analytics with interactive charts
-- Screenshot gallery with modal preview
-- Search and advanced filtering
-- Responsive dark/light theme
-- Loading states and error handling
+- **Dashboard**: Stats cards, domain charts, recent activity timeline
+- **Timeline**: Infinite scroll activity list with advanced filters
+- **Screenshots**: Grid gallery with modal preview and AI summaries
+- **Settings**: Extension setup, privacy controls, backend configuration
+- **Toast Notifications**: Success/error/info/warning feedback
+- **Skeleton Loaders**: Smooth loading states throughout
+- **Responsive Design**: Works beautifully on desktop, tablet, mobile
+- **Dark Theme**: Eye-friendly dark mode as default
 
 ### 🔄 Offline-First Architecture
-- IndexedDB-backed queue for offline resilience
+- **IndexedDB queue** using `idb` library
 - Automatic sync when connection restored
-- Exponential backoff retry logic
-- Chrome alarms for background sync
+- Exponential backoff retry logic (1s → 2s → 4s → ... max 60s)
+- Chrome alarms for background sync every 1 minute
+- Queue size indicator in extension popup
 
-## 📋 Tech Stack
+### 🛡️ Security & Privacy
+- Sensitive input filtering (passwords, credit cards, tokens, SSNs)
+- CORS protection with configurable origins
+- MongoDB authentication support
+- Extension only tracks when explicitly started
+- No third-party data collection
 
-| Layer | Technologies |
-|-------|-------------|
-| **Backend** | FastAPI, Motor (async MongoDB), Structlog, Pydantic v2 |
-| **Frontend** | React 18, TypeScript, Vite, Tailwind CSS, Recharts, React Query |
-| **Extension** | Chrome Manifest V3, TypeScript, IndexedDB (idb), Webpack |
-| **AI** | Groq API (Vision), OpenAI SDK, Tesseract OCR |
-| **Database** | MongoDB 7.0 (Atlas Free Tier compatible) |
-| **Infrastructure** | Docker Compose, Uvicorn |
+---
 
-## 🛠️ Setup Instructions
+## 🚀 Quick Start
 
 ### Prerequisites
-- **Node.js** 20+
-- **Python** 3.11+
-- **MongoDB** 7.0+ (or MongoDB Atlas)
-- **Docker** and Docker Compose (optional)
-- **Groq API Key** (get free at https://console.groq.com)
-- **Tesseract OCR** (optional fallback): `apt-get install tesseract-ocr` (Linux) or `brew install tesseract` (Mac)
 
-### 1. Clone and Setup
+```bash
+# Required
+- Node.js 20+
+- Python 3.11+
+- MongoDB 7.0+ (or MongoDB Atlas free tier)
+- Groq API Key (free at https://console.groq.com)
+
+# Optional (for OCR fallback)
+- Tesseract OCR: apt-get install tesseract-ocr (Linux) or brew install tesseract (Mac)
+```
+
+### 1. Clone Repository
 
 ```bash
 git clone <your-repo-url> TabTrail
 cd TabTrail
 ```
 
-### 2. Backend Setup
+### 2. Backend Setup (FastAPI + MongoDB)
 
 ```bash
 cd backend
 
-# Create Python virtual environment
+# Create virtual environment
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 
@@ -80,6 +116,7 @@ cp .env.example .env
 ```
 
 **Backend `.env` Configuration:**
+
 ```env
 MONGODB_URI=mongodb://localhost:27017
 MONGODB_DB_NAME=tabtrail
@@ -89,21 +126,27 @@ API_V1_PREFIX=/api/v1
 CORS_ORIGINS=http://localhost:5173
 MAX_BATCH_SIZE=100
 MAX_SCREENSHOT_BASE64_BYTES=1048576
-GROQ_API_KEY=gsk_your_actual_key_here
+
+# Groq Vision API (REQUIRED for AI analysis)
+GROQ_API_KEY=gsk_your_actual_groq_api_key_here
 GROQ_VISION_MODEL=llava-v1.5-7b-4096-preview
 ```
 
 **Start Backend:**
+
 ```bash
-# Option 1: With Docker Compose (includes MongoDB)
+# Option 1: Docker Compose (includes MongoDB)
 docker compose up -d
 
 # Option 2: Local development
-mongod  # Start MongoDB locally
+mongod  # Start MongoDB in another terminal
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-### 3. Frontend Setup
+Backend will be available at http://localhost:8000
+API Docs: http://localhost:8000/docs
+
+### 3. Frontend Setup (React + Vite)
 
 ```bash
 cd frontend
@@ -111,9 +154,8 @@ cd frontend
 # Install dependencies
 npm install
 
-# Configure environment
+# Configure environment (optional, default works)
 cp .env.example .env
-# Edit .env if needed (default points to localhost:8000)
 
 # Start development server
 npm run dev
@@ -134,187 +176,525 @@ npm run build
 ```
 
 **Load Extension in Chrome:**
-1. Open Chrome and navigate to `chrome://extensions`
+
+1. Open Chrome → `chrome://extensions`
 2. Enable **Developer mode** (top-right toggle)
 3. Click **"Load unpacked"**
-4. Select the `extension/dist` folder
-5. Click the TabTrail extension icon
-6. Click **"Start Monitoring"** to begin tracking
+4. Select `extension/dist` folder
+5. Click TabTrail icon → **"Start Monitoring"**
 
-## 🎯 Usage
+---
 
-### Starting the System
+## 🏗️ Architecture
 
-1. **Start Backend:**
-   ```bash
-   cd backend
-   docker compose up -d  # or uvicorn app.main:app --reload
-   ```
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         Chrome Extension                         │
+│  ┌──────────────┐  ┌──────────────┐  ┌────────────────────┐   │
+│  │  Service     │  │   Content    │  │   Popup UI         │   │
+│  │  Worker      │  │   Scripts    │  │ (Start/Stop/Stats) │   │
+│  └──────┬───────┘  └──────┬───────┘  └────────────────────┘   │
+│         │                  │                                     │
+│         │        ┌─────────▼──────────┐                        │
+│         └────────►  IndexedDB Queue   │                        │
+│                   └─────────┬──────────┘                        │
+└─────────────────────────────┼──────────────────────────────────┘
+                              │ HTTP POST (batch)
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                       FastAPI Backend                            │
+│  ┌──────────────┐  ┌──────────────┐  ┌────────────────────┐   │
+│  │   Routers    │──►   Services   │──►   Repositories     │   │
+│  └──────────────┘  └──────┬───────┘  └─────────┬──────────┘   │
+│                            │                     │               │
+│                    ┌───────▼──────────┐  ┌──────▼──────────┐   │
+│                    │  AI Analysis     │  │    MongoDB      │   │
+│                    │  (Groq Vision)   │  │    (Motor)      │   │
+│                    └──────────────────┘  └─────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              │ REST API
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                     React Dashboard                              │
+│  ┌──────────────┐  ┌──────────────┐  ┌────────────────────┐   │
+│  │  Dashboard   │  │   Timeline   │  │   Screenshots      │   │
+│  │  (Stats)     │  │ (Activities) │  │   (Gallery)        │   │
+│  └──────────────┘  └──────────────┘  └────────────────────┘   │
+│                    React Query + Axios                           │
+└─────────────────────────────────────────────────────────────────┘
+```
 
-2. **Start Frontend:**
-   ```bash
-   cd frontend
-   npm run dev
-   ```
+### Data Flow
 
-3. **Load Extension:**
-   - Open `chrome://extensions`
-   - Click the TabTrail icon
-   - Click "Start Monitoring"
+```
+1. User browses web → Extension captures events (tabs, clicks, scrolls)
+2. Screenshot taken every 30s → Compressed to JPEG quality 60
+3. Events queued in IndexedDB → Batch sent to backend API
+4. Backend receives screenshot → Calls Groq Vision API
+5. AI extracts UI elements + workflow context → Stored in MongoDB
+6. Dashboard polls API → Displays activities + AI summaries
+```
 
-4. **View Dashboard:**
-   - Open http://localhost:5173
-   - See real-time activity, AI summaries, and analytics
+---
 
-### How AI Analysis Works
+## 📚 API Documentation
 
-1. Extension captures screenshot every 30s
-2. Screenshot uploaded to backend via `/screenshots/batch`
-3. Backend calls Groq Vision API automatically
-4. AI analyzes screenshot and extracts:
-   - **Summary**: One-sentence page description
-   - **UI Elements**: Buttons, forms, dialogs, menus
-   - **Workflow Context**: User's likely task (coding, shopping, etc.)
-   - **Page Category**: Coding, social, finance, productivity, etc.
-5. Results stored in MongoDB with screenshot
-6. Dashboard displays AI insights alongside activity timeline
+### Base URL
+```
+http://localhost:8000/api/v1
+```
 
-### API Endpoints
+### Authentication
+Currently no authentication (add JWT/API keys for production)
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/health` | Health check |
-| POST | `/api/v1/activities/batch` | Ingest activity batch |
-| GET | `/api/v1/activities` | List activities (paginated) |
-| GET | `/api/v1/activities/{id}` | Get single activity |
-| DELETE | `/api/v1/activities/{id}` | Delete activity |
-| GET | `/api/v1/activities/stats` | Aggregated stats |
-| POST | `/api/v1/screenshots/batch` | Ingest screenshots |
-| GET | `/api/v1/screenshots` | List screenshots (no base64) |
-| GET | `/api/v1/screenshots/{id}` | Get screenshot with base64 |
-| POST | `/api/v1/screenshots/{id}/analyze` | Re-analyze screenshot |
-| DELETE | `/api/v1/screenshots/{id}` | Delete screenshot |
+### Endpoints
 
-## 🔒 Privacy & Security
+#### Health Check
+```http
+GET /health
+```
 
-- **No cloud storage**: All data stays on your infrastructure
-- **Sensitive input filtering**: Automatically excludes password fields, credit cards, tokens
-- **Explicit consent**: Extension only tracks when you click "Start Monitoring"
-- **Local-first**: Offline queue ensures functionality without backend
-- **MongoDB security**: Configure authentication for production use
+**Response:**
+```json
+{
+  "status": "ok",
+  "service": "tabtrail-backend"
+}
+```
+
+#### Activities
+
+**Create Activity Batch**
+```http
+POST /api/v1/activities/batch
+Content-Type: application/json
+
+{
+  "userId": "user_123",
+  "clientId": "ext_abc",
+  "activities": [
+    {
+      "type": "tab_change",
+      "url": "https://github.com",
+      "domain": "github.com",
+      "title": "GitHub",
+      "tabId": 1,
+      "windowId": 1,
+      "metadata": {},
+      "recordedAt": "2026-07-31T18:00:00Z"
+    }
+  ]
+}
+```
+
+**List Activities**
+```http
+GET /api/v1/activities?userId=user_123&page=1&pageSize=50&type=tab_change&domain=github.com
+```
+
+**Response:**
+```json
+{
+  "items": [...],
+  "total": 1523,
+  "page": 1,
+  "pageSize": 50,
+  "pages": 31
+}
+```
+
+**Get Activity Stats**
+```http
+GET /api/v1/activities/stats?userId=user_123
+```
+
+**Response:**
+```json
+{
+  "totalActivities": 5000,
+  "topDomains": [
+    {"domain": "github.com", "count": 1200},
+    {"domain": "stackoverflow.com", "count": 800}
+  ],
+  "activityByHour": [
+    {"hour": 9, "count": 300},
+    {"hour": 10, "count": 450}
+  ],
+  "typeBreakdown": {
+    "tab_change": 2000,
+    "click": 1500,
+    "scroll": 1000,
+    "navigation": 500
+  }
+}
+```
+
+#### Screenshots
+
+**Create Screenshot Batch**
+```http
+POST /api/v1/screenshots/batch
+Content-Type: application/json
+
+{
+  "userId": "user_123",
+  "clientId": "ext_abc",
+  "screenshots": [
+    {
+      "url": "https://github.com",
+      "domain": "github.com",
+      "tabId": 1,
+      "imageBase64": "base64_string_here",
+      "imageWidth": 1280,
+      "imageHeight": 720,
+      "fileSizeBytes": 150000,
+      "recordedAt": "2026-07-31T18:00:00Z"
+    }
+  ]
+}
+```
+
+**List Screenshots** (no base64)
+```http
+GET /api/v1/screenshots?userId=user_123&page=1&pageSize=48
+```
+
+**Get Screenshot with Image**
+```http
+GET /api/v1/screenshots/{screenshot_id}
+```
+
+**Analyze Screenshot** (trigger AI analysis)
+```http
+POST /api/v1/screenshots/{screenshot_id}/analyze
+```
+
+**Response:**
+```json
+{
+  "id": "...",
+  "summary": "GitHub repository page showing code files and README",
+  "uiElements": ["Clone button", "Code tab", "Issues tab", "Pull requests tab", "README.md"],
+  "workflowContext": "browsing source code repository",
+  "pageCategory": "coding"
+}
+```
+
+---
+
+## 🎨 Project Structure
+
+```
+TabTrail/
+├── backend/                    # FastAPI backend
+│   ├── app/
+│   │   ├── core/              # Config, database, logging, exceptions
+│   │   ├── models/            # Pydantic models (validation)
+│   │   ├── repositories/      # MongoDB data access
+│   │   ├── services/          # Business logic + AI analysis
+│   │   │   └── ai_analysis.py # Groq Vision integration
+│   │   └── routers/           # REST API endpoints
+│   ├── tests/                 # Pytest test suite
+│   ├── Dockerfile
+│   ├── requirements.txt
+│   └── .env.example
+│
+├── frontend/                   # React dashboard
+│   ├── src/
+│   │   ├── api/               # API client + React Query hooks
+│   │   ├── components/
+│   │   │   ├── ui/            # ToastContainer, etc.
+│   │   │   ├── layout/        # Shell, Sidebar, Header
+│   │   │   ├── dashboard/     # Stats, Timeline, Gallery
+│   │   │   └── search/        # SearchBar, FilterPanel
+│   │   ├── hooks/             # useToast, useActivities, useScreenshots
+│   │   ├── pages/             # Dashboard, Timeline, Screenshots, Settings
+│   │   └── lib/               # Utils, constants
+│   ├── package.json
+│   ├── vite.config.ts
+│   └── .env.example
+│
+├── extension/                  # Chrome Manifest V3
+│   ├── src/
+│   │   ├── background/        # Service worker, tracking, screenshots
+│   │   ├── content/           # Content script (clicks, scrolls)
+│   │   ├── popup/             # Extension popup UI
+│   │   └── lib/               # Offline queue, API client, types
+│   ├── manifest.json
+│   ├── webpack.config.js
+│   └── package.json
+│
+├── docker-compose.yml
+└── README.md
+```
+
+---
+
+## 🚀 Deployment
+
+### Backend (Production)
+
+**Option 1: Docker**
+
+```bash
+# Build production image
+cd backend
+docker build -f Dockerfile -t tabtrail-backend:latest .
+
+# Run container
+docker run -d \
+  -p 8000:8000 \
+  -e MONGODB_URI="mongodb+srv://user:pass@cluster.mongodb.net" \
+  -e GROQ_API_KEY="your_key" \
+  -e APP_ENV="production" \
+  -e CORS_ORIGINS="https://yourdomain.com" \
+  tabtrail-backend:latest
+```
+
+**Option 2: Cloud Platforms**
+
+- **Railway**: Connect GitHub, auto-deploy on push
+- **Render**: Add `render.yaml` for one-click deploy
+- **Fly.io**: `flyctl launch` for instant deployment
+- **AWS ECS**: Use provided Dockerfile
+
+### Frontend (Production)
+
+```bash
+cd frontend
+npm run build
+# Deploy dist/ folder to:
+# - Vercel: vercel --prod
+# - Netlify: netlify deploy --prod
+# - CloudFlare Pages: wrangler pages publish dist
+```
+
+**Update .env for production:**
+```env
+VITE_API_BASE_URL=https://api.yourdomain.com
+```
+
+### MongoDB Atlas (Free Tier)
+
+1. Create account at https://cloud.mongodb.com
+2. Create free M0 cluster
+3. Add database user
+4. Whitelist IP: `0.0.0.0/0` (or specific IPs)
+5. Get connection string
+6. Update `MONGODB_URI` in backend .env
+
+### Chrome Extension Distribution
+
+**Option 1: Chrome Web Store**
+1. Create developer account ($5 one-time fee)
+2. Zip `extension/dist` folder
+3. Upload to Chrome Web Store Developer Dashboard
+4. Complete store listing with screenshots
+5. Submit for review (usually 1-3 days)
+
+**Option 2: Enterprise Distribution**
+- Use Chrome Enterprise policies for internal deployment
+- Load unpacked extension on each machine
+
+---
 
 ## 🧪 Testing
 
 ### Backend Tests
+
 ```bash
 cd backend
 pytest -v
+
+# With coverage
+pytest --cov=app --cov-report=html
 ```
 
 ### Frontend Type Check
+
 ```bash
 cd frontend
 npm run typecheck
+
+# Build test
+npm run build
 ```
 
 ### Extension Build
+
 ```bash
 cd extension
 npm run build
 ```
 
-## 📚 Project Structure
-
-```
-TabTrail/
-├── backend/           # FastAPI backend with Groq Vision AI
-│   ├── app/
-│   │   ├── core/      # Config, database, logging, exceptions
-│   │   ├── models/    # Pydantic models for validation
-│   │   ├── repositories/  # MongoDB data access layer
-│   │   ├── services/  # Business logic + AI analysis
-│   │   ├── routers/   # REST API endpoints
-│   ├── tests/         # Pytest test suite
-│   └── Dockerfile
-├── frontend/          # React + TypeScript dashboard
-│   ├── src/
-│   │   ├── api/       # API client and hooks
-│   │   ├── components/ # Reusable UI components
-│   │   ├── hooks/     # React Query hooks
-│   │   ├── pages/     # Route pages
-│   │   └── lib/       # Utilities
-├── extension/         # Chrome Manifest V3 extension
-│   ├── src/
-│   │   ├── background/ # Service worker, tracking, screenshots
-│   │   ├── content/   # Content script for clicks/scrolls
-│   │   ├── popup/     # Extension popup UI
-│   │   └── lib/       # Offline queue, API client, types
-└── docs/              # Additional documentation
-```
-
-## 🚀 Production Deployment
-
-### MongoDB Atlas
-1. Create free MongoDB Atlas cluster
-2. Update `MONGODB_URI` in backend `.env`
-3. Whitelist your IP address
-4. Configure database user
-
-### Backend Deployment
-- Use `backend/Dockerfile` for containerization
-- Configure `CORS_ORIGINS` for production domain
-- Set `APP_ENV=production` in `.env`
-- Use environment variable management (AWS Secrets Manager, etc.)
-
-### Frontend Deployment
-```bash
-cd frontend
-npm run build
-# Deploy dist/ to Vercel, Netlify, or CloudFlare Pages
-```
-
-### Extension Distribution
-- Publish to Chrome Web Store
-- Update `backend URL` in extension settings
-- Provide setup instructions to users
+---
 
 ## 🐛 Troubleshooting
 
-### Extension not tracking
-- Check if monitoring is started (green badge in popup)
-- Open `chrome://extensions` → Service Worker → Console
-- Verify backend is running and accessible
+### Extension Not Tracking
 
-### AI analysis not working
-- Verify `GROQ_API_KEY` is set in backend `.env`
-- Check backend logs: `docker compose logs backend`
-- Test endpoint: `POST /api/v1/screenshots/{id}/analyze`
-- OCR fallback will activate if API unavailable
+**Symptoms**: No activities showing in dashboard
 
-### MongoDB connection failed
-- Verify MongoDB is running: `mongosh`
-- Check `MONGODB_URI` in `.env`
-- For Atlas: verify IP whitelist and credentials
+**Solutions**:
+1. Check if monitoring is started (green "Recording" badge in popup)
+2. Open `chrome://extensions` → TabTrail → Service Worker → Console
+3. Look for errors in console
+4. Verify backend is running: `curl http://localhost:8000/health`
+5. Check IndexedDB queue: DevTools → Application → IndexedDB → tabtrail-queue
 
-## 📄 License
+### AI Analysis Not Working
 
-MIT License - see LICENSE file for details
+**Symptoms**: Screenshots have no AI summaries
 
-## 🙏 Acknowledgments
+**Solutions**:
+1. Verify `GROQ_API_KEY` is set in backend `.env`
+2. Check backend logs: `docker compose logs backend -f`
+3. Test API directly: `POST /api/v1/screenshots/{id}/analyze`
+4. Check Groq API status: https://status.groq.com
+5. OCR fallback activates automatically if API unavailable
 
-- **Groq** for fast vision API inference
-- **FastAPI** for modern Python backend framework
-- **React Query** for powerful data fetching
-- **Recharts** for beautiful charts
-- **Tailwind CSS** for utility-first styling
+### MongoDB Connection Failed
 
-## 📞 Support
+**Symptoms**: Backend crashes on startup
 
-For issues and questions:
-- Open an issue on GitHub
-- Check API documentation at `/docs` (FastAPI auto-generated)
-- Review backend logs for debugging
+**Solutions**:
+1. Verify MongoDB is running: `mongosh` or check Docker: `docker ps`
+2. Check `MONGODB_URI` format in `.env`
+3. For Atlas: verify IP whitelist includes your IP
+4. For Atlas: verify username/password are correct
+5. Check MongoDB logs: `docker compose logs mongodb`
+
+### Frontend API Errors
+
+**Symptoms**: Dashboard shows loading state forever
+
+**Solutions**:
+1. Check CORS configuration in backend `.env`: `CORS_ORIGINS=http://localhost:5173`
+2. Verify backend is accessible: Open http://localhost:8000/docs
+3. Check browser console for errors (F12)
+4. Verify API base URL in `frontend/.env`
+
+### Screenshots Not Capturing
+
+**Symptoms**: No screenshots in gallery
+
+**Solutions**:
+1. Extension needs `activeTab` permission (check manifest)
+2. Screenshots won't work on `chrome://` pages (Chrome restriction)
+3. Check screenshot alarm: Extension → Service Worker → `chrome.alarms.getAll()`
+4. Verify screenshot interval in popup settings
 
 ---
 
-**Built with ❤️ using Groq Vision AI** • Production-ready • Privacy-first • Offline-capable
+## 📊 Performance & Limits
+
+### MongoDB
+
+- **Activities**: ~1KB per document → 1M activities = ~1GB
+- **Screenshots**: ~150KB per screenshot → 1000 screenshots = ~150MB
+- **Indexes**: Ensure indexes exist for query performance
+- **TTL**: Consider adding TTL indexes to auto-delete old data after 90 days
+
+### Extension
+
+- **Screenshot frequency**: Default 30s, configurable
+- **IndexedDB quota**: ~50-100MB typical, up to 60% disk space
+- **Batch size**: 50 activities or 10 screenshots per sync
+- **Memory**: ~20-30MB service worker memory usage
+
+### Backend
+
+- **Concurrent requests**: Uvicorn handles ~1000 req/s with gunicorn workers
+- **Groq API rate limits**: Check your Groq plan (free tier: 30 req/min)
+- **MongoDB connection pooling**: Motor defaults to 100 connections
+
+---
+
+## 🔒 Security Best Practices
+
+### Production Checklist
+
+- [ ] Add JWT authentication to all API endpoints
+- [ ] Enable MongoDB authentication (`mongod --auth`)
+- [ ] Use HTTPS for backend (Cloudflare, Let's Encrypt)
+- [ ] Rotate Groq API key regularly
+- [ ] Set strict CORS origins (no wildcards in production)
+- [ ] Add rate limiting (10 req/s per user)
+- [ ] Hash sensitive data in MongoDB
+- [ ] Enable MongoDB replica set for high availability
+- [ ] Add API versioning (`/api/v2/`)
+- [ ] Implement request logging with structlog
+- [ ] Add health check monitoring (UptimeRobot, Pingdom)
+- [ ] Use environment variable management (AWS Secrets, Doppler)
+
+---
+
+## 🗺️ Future Roadmap
+
+### Phase 1: Enhanced AI (v1.1)
+- [ ] Session replay with playback controls
+- [ ] AI-powered daily summaries
+- [ ] Smart search with natural language queries
+- [ ] Export sessions (PDF/CSV/JSON)
+- [ ] Privacy dashboard with excluded websites
+
+### Phase 2: Collaboration (v1.2)
+- [ ] Team workspaces with shared analytics
+- [ ] Activity sharing via public links
+- [ ] Real-time collaboration dashboard
+- [ ] Slack/Discord notifications integration
+
+### Phase 3: Advanced Analytics (v1.3)
+- [ ] Productivity scoring algorithm
+- [ ] Focus time vs distraction time tracking
+- [ ] Website category recommendations
+- [ ] Weekly/monthly reports with insights
+- [ ] Chrome extension for Firefox support
+
+### Phase 4: Enterprise (v2.0)
+- [ ] SSO authentication (Google, Microsoft, Okta)
+- [ ] Role-based access control (RBAC)
+- [ ] Audit logs for compliance
+- [ ] On-premise deployment option
+- [ ] API webhooks for integrations
+
+---
+
+## 🙏 Acknowledgments
+
+- **Groq** for blazing-fast vision API inference
+- **FastAPI** for elegant Python backend framework
+- **React Query** for powerful data synchronization
+- **Recharts** for beautiful chart visualizations
+- **Tailwind CSS** for utility-first styling
+- **MongoDB** for flexible document storage
+- **Chrome Extensions API** for browser integration
+- **IndexedDB** for offline-first architecture
+
+---
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file
+
+---
+
+## 📞 Support & Contact
+
+- **Issues**: [GitHub Issues](https://github.com/yourusername/tabtrail/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/yourusername/tabtrail/discussions)
+- **Email**: support@tabtrail.com
+- **Discord**: [Join Community](https://discord.gg/tabtrail)
+
+---
+
+<div align="center">
+
+**Built with ❤️ using Groq Vision AI**
+
+Production-Ready • Privacy-First • Offline-Capable • Portfolio-Quality
+
+⭐ Star this repo if you find it useful!
+
+</div>

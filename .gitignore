@@ -29,7 +29,8 @@ mongodata/
 
 # Environment
 .env
-!.env.example
+backend/.env
+# !.env.example
 
 # Coverage
 htmlcov/
