@@ -52,7 +52,7 @@ async function pushActivity(type: ActivityRecord['type'], overrides: Partial<Act
 export function startTracking(): void {
   chrome.tabs.onActivated.addListener(async (activeInfo) => {
     const tab = await chrome.tabs.get(activeInfo.tabId);
-    emitActivity('tab_change', {
+    await pushActivity('tab_change', {
       url: tab.url || '',
       domain: extractDomain(tab.url || ''),
       title: tab.title || null,
@@ -62,9 +62,9 @@ export function startTracking(): void {
     });
   });
 
-  chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
     if (changeInfo.status === 'complete' && tab.active) {
-      emitActivity('navigation', {
+      await pushActivity('navigation', {
         url: tab.url || '',
         domain: extractDomain(tab.url || ''),
         title: tab.title || null,
@@ -76,14 +76,14 @@ export function startTracking(): void {
 
   chrome.runtime.onMessage.addListener((message, sender) => {
     if (message.kind === 'tabtrail-activity') {
-      emitActivity(message.type as ActivityRecord['type'], message.payload);
+      pushActivity(message.type as ActivityRecord['type'], message.payload);
     }
   });
 
   chrome.runtime.onConnect.addListener((port) => {
     if (port.name === 'tabtrail-activities') {
       port.onMessage.addListener(async (message) => {
-        emitActivity(message.type as ActivityRecord['type'], message.payload);
+        await pushActivity(message.type as ActivityRecord['type'], message.payload);
       });
     }
   });

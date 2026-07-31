@@ -6,6 +6,7 @@ import TimelinePage from './pages/TimelinePage';
 import ScreenshotsPage from './pages/ScreenshotsPage';
 import SettingsPage from './pages/SettingsPage';
 import NotFoundPage from './pages/NotFoundPage';
+import ToastContainer from './components/ui/ToastContainer';
 
 export default function App() {
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
@@ -17,14 +18,17 @@ export default function App() {
   const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark');
 
   return (
-    <Shell theme={theme} onToggleTheme={toggleTheme}>
-      <Routes>
-        <Route path="/" element={<DashboardPage />} />
-        <Route path="/timeline" element={<TimelinePage />} />
-        <Route path="/screenshots" element={<ScreenshotsPage />} />
-        <Route path="/settings" element={<SettingsPage />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </Shell>
+    <>
+      <Shell theme={theme} onToggleTheme={toggleTheme}>
+        <Routes>
+          <Route path="/" element={<DashboardPage />} />
+          <Route path="/timeline" element={<TimelinePage />} />
+          <Route path="/screenshots" element={<ScreenshotsPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </Shell>
+      <ToastContainer />
+    </>
   );
 }
