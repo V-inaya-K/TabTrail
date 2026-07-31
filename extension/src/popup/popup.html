@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="popup.css">
+  <title>TabTrail</title>
+</head>
+<body>
+  <div class="popup-container">
+    <header class="popup-header">
+      <h1 class="popup-title">TabTrail</h1>
+      <span id="status-badge" class="status-badge status-stopped">Stopped</span>
+    </header>
+
+    <main class="popup-main">
+      <button id="toggle-btn" class="btn btn-primary">Start Monitoring</button>
+
+      <div class="stats">
+        <div class="stat-item">
+          <span class="stat-label">Activities</span>
+          <span id="activity-count" class="stat-value">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Screenshots</span>
+          <span id="screenshot-count" class="stat-value">0</span>
+        </div>
+      </div>
+
+      <div class="online-status">
+        <span id="connection-badge"></span>
+      </div>
+    </main>
+
+    <footer class="popup-footer">
+      <small>Your data stays on your server.</small>
+    </footer>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

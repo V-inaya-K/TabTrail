@@ -1,0 +1,20 @@
+{
+  "name": "tabtrail-extension",
+  "version": "0.1.0",
+  "description": "TabTrail Browser Activity Tracker Extension",
+  "scripts": {
+    "build": "webpack --config webpack.config.js",
+    "dev": "webpack --config webpack.config.js --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "copy-webpack-plugin": "^12.0.2",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.7.2",
+    "webpack": "^5.96.1",
+    "webpack-cli": "^6.0.1"
+  },
+  "dependencies": {
+    "idb": "^8.0.0"
+  }
+}
