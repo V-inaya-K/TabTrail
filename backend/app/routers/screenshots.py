@@ -56,3 +56,12 @@ async def delete_screenshot(
 ):
     await service.delete_screenshot(screenshot_id)
     return {"deleted": True}
+
+
+@router.post("/screenshots/{screenshot_id}/analyze")
+async def analyze_screenshot(
+    screenshot_id: str,
+    service: ScreenshotService = Depends(get_screenshot_service),
+):
+    result = await service.analyze_screenshot(screenshot_id)
+    return result

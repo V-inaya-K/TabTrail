@@ -51,3 +51,16 @@ class ScreenshotRepository(BaseRepository):
     async def delete_one(self, screenshot_id: str) -> bool:
         result = await self.collection.delete_one({"_id": ObjectId(screenshot_id)})
         return result.deleted_count > 0
+
+    async def update_analysis(self, screenshot_id: ObjectId | str, analysis: dict) -> None:
+        _id = screenshot_id if isinstance(screenshot_id, ObjectId) else ObjectId(screenshot_id)
+        await self.collection.update_one(
+            {"_id": _id},
+            {"$set": {
+                "aiSummary": analysis.get("summary", ""),
+                "aiUiElements": analysis.get("uiElements", []),
+                "aiWorkflowContext": analysis.get("workflowContext", ""),
+                "aiPageCategory": analysis.get("pageCategory", "other"),
+                "aiAnalyzed": True,
+            }},
+        )

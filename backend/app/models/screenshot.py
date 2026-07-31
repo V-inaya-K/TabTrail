@@ -44,12 +44,23 @@ class ScreenshotOut(BaseModel):
     fileSizeBytes: int
     recordedAt: datetime
     createdAt: datetime
+    aiSummary: str | None = None
+    aiUiElements: list[str] = Field(default_factory=list)
+    aiWorkflowContext: str | None = None
+    aiPageCategory: str | None = None
+    aiAnalyzed: bool = False
 
     model_config = {"populate_by_name": True}
 
 
 class ScreenshotWithImage(ScreenshotOut):
     imageBase64: str
+
+class ScreenshotAnalysisResponse(BaseModel):
+    summary: str
+    uiElements: list[str] = Field(default_factory=list)
+    workflowContext: str | None = None
+    pageCategory: str | None = None
 
 
 class ScreenshotFilter(BaseModel):

@@ -1,3 +1,4 @@
+import math
 import structlog
 
 from app.core.exceptions import NotFoundError as AppNotFoundError
@@ -7,6 +8,7 @@ from app.models.screenshot import (
     PaginatedResponse,
 )
 from app.repositories.screenshot_repo import ScreenshotRepository
+from app.services.ai_analysis import VisionAnalysisService
 
 logger = structlog.get_logger(__name__)
 
@@ -14,11 +16,12 @@ logger = structlog.get_logger(__name__)
 class ScreenshotService:
     def __init__(self) -> None:
         self.repo = ScreenshotRepository()
+        self.ai = VisionAnalysisService()
 
     async def create_batch(self, batch: ScreenshotBatchRequest) -> dict:
         docs = []
         for screenshot in batch.screenshots:
-            docs.append({
+            doc = {
                 "userId": batch.userId,
                 "clientId": screenshot.clientId,
                 "url": screenshot.url,
@@ -29,13 +32,38 @@ class ScreenshotService:
                 "imageHeight": screenshot.imageHeight or 0,
                 "fileSizeBytes": screenshot.fileSizeBytes or 0,
                 "recordedAt": screenshot.recordedAt,
-            })
+                "aiAnalyzed": False,
+            }
+            docs.append(doc)
+
         count = await self.repo.insert_batch(docs)
         logger.info("screenshots_inserted", count=count, userId=batch.userId)
+
+        # Analyze the first screenshot asynchronously (background)
+        if docs and docs[0].get("imageBase64"):
+            try:
+                analysis = await self.ai.analyze(docs[0]["imageBase64"])
+                if analysis:
+                    await self.repo.update_analysis(docs[0]["_id"], analysis)
+            except Exception:
+                logger.warning("ai_analysis_deferred", screenshot_id=str(docs[0].get("_id", "")))
+
         return {"inserted": count}
 
+    async def analyze_screenshot(self, screenshot_id: str) -> dict:
+        doc = await self.repo.find_one(screenshot_id)
+        if not doc:
+            raise AppNotFoundError("Screenshot", screenshot_id)
+        if not doc.get("imageBase64"):
+            raise ValueError("Screenshot has no image data")
+
+        analysis = await self.ai.analyze(doc["imageBase64"])
+        await self.repo.update_analysis(screenshot_id, analysis or {})
+        doc["id"] = screenshot_id
+        doc.update(analysis or {})
+        return doc
+
     async def list_screenshots(self, filter_q: ScreenshotFilter, user_id: str) -> PaginatedResponse:
-        import math
         items, total = await self.repo.find_many(
             user_id=user_id,
             page=filter_q.page,

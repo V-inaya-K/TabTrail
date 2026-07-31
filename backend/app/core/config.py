@@ -23,6 +23,10 @@ class Settings(BaseSettings):
     max_batch_size: int = 100
     max_screenshot_base64_bytes: int = 1_048_576  # 1MB
 
+    # Groq Vision AI
+    groq_api_key: str = ""
+    groq_vision_model: str = "llava-v1.5-7b-4096-preview"
+
     @property
     def is_development(self) -> bool:
         return self.app_env == "development"
