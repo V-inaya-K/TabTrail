@@ -563,27 +563,6 @@ npm run build
 - **Groq API rate limits**: Check your Groq plan (free tier: 30 req/min)
 - **MongoDB connection pooling**: Motor defaults to 100 connections
 
----
-
-## 🔒 Security Best Practices
-
-### Production Checklist
-
-- [ ] Add JWT authentication to all API endpoints
-- [ ] Enable MongoDB authentication (`mongod --auth`)
-- [ ] Use HTTPS for backend (Cloudflare, Let's Encrypt)
-- [ ] Rotate Groq API key regularly
-- [ ] Set strict CORS origins (no wildcards in production)
-- [ ] Add rate limiting (10 req/s per user)
-- [ ] Hash sensitive data in MongoDB
-- [ ] Enable MongoDB replica set for high availability
-- [ ] Add API versioning (`/api/v2/`)
-- [ ] Implement request logging with structlog
-- [ ] Add health check monitoring (UptimeRobot, Pingdom)
-- [ ] Use environment variable management (AWS Secrets, Doppler)
-
----
-
 ## 🗺️ Future Roadmap
 
 ### Phase 1: Enhanced AI (v1.1)
@@ -625,21 +604,6 @@ npm run build
 - **MongoDB** for flexible document storage
 - **Chrome Extensions API** for browser integration
 - **IndexedDB** for offline-first architecture
-
----
-
-## 📄 License
-
-MIT License - see [LICENSE](LICENSE) file
-
----
-
-## 📞 Support & Contact
-
-- **Issues**: [GitHub Issues](https://github.com/yourusername/tabtrail/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/tabtrail/discussions)
-- **Email**: support@tabtrail.com
-- **Discord**: [Join Community](https://discord.gg/tabtrail)
 
 ---
 
