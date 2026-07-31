@@ -10,7 +10,7 @@ interface ShellProps {
 
 export default function Shell({ children, theme, onToggleTheme }: ShellProps) {
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden bg-[rgb(var(--color-bg))]">
       <Sidebar />
       <div className="flex flex-1 flex-col overflow-hidden">
         <Header theme={theme} onToggleTheme={onToggleTheme} />

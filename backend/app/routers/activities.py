@@ -45,6 +45,14 @@ async def list_activities(
     return await service.list_activities(filters, userId)
 
 
+@router.get("/activities/stats")
+async def get_activity_stats(
+    userId: str = Query(...),
+    service: ActivityService = Depends(get_activity_service),
+):
+    return await service.get_stats(userId)
+
+
 @router.get("/activities/{activity_id}")
 async def get_activity(
     activity_id: str,
@@ -60,11 +68,3 @@ async def delete_activity(
 ):
     await service.delete_activity(activity_id)
     return {"deleted": True}
-
-
-@router.get("/activities/stats")
-async def get_activity_stats(
-    userId: str = Query(...),
-    service: ActivityService = Depends(get_activity_service),
-):
-    return await service.get_stats(userId)

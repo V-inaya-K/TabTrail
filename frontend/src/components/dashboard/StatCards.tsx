@@ -14,8 +14,8 @@ export default function StatCards({ total, topDomain, screenshotCount }: StatCar
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
       {cards.map((c) => (
-        <div key={c.label} className="bg-slate-900 border border-slate-800 rounded-xl p-5">
-          <div className="text-xs uppercase tracking-wider text-slate-500 mb-1">{c.label}</div>
+        <div key={c.label} className="bg-[rgb(var(--color-surface))] border rounded-xl p-5">
+          <div className="text-xs uppercase tracking-wider text-[rgb(var(--color-text-muted))] mb-1">{c.label}</div>
           <div className={`text-2xl font-bold ${c.color}`}>{c.value}</div>
         </div>
       ))}

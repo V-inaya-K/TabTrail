@@ -9,7 +9,7 @@ export default function TimelinePage() {
   const [filters, setFilters] = useState<{ type?: string; domain?: string }>({});
   const [searchQuery, setSearchQuery] = useState('');
 
-  const { data, isLoading } = useActivities({
+  const { data, isLoading, error } = useActivities({
     page,
     pageSize: 50,
     type: filters.type,
@@ -28,7 +28,7 @@ export default function TimelinePage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-slate-100 mb-6">Timeline</h1>
+      <h1 className="text-2xl font-bold text-[rgb(var(--color-text))] mb-6">Timeline</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <aside className="lg:col-span-1">
@@ -38,37 +38,27 @@ export default function TimelinePage() {
         <main className="lg:col-span-3">
           <SearchBar onSearch={handleSearch} />
 
+          {error && (
+            <div className="bg-red-500/10 border-red-500/50 border rounded-lg p-4 text-red-400 mb-4">
+              Failed to load activities. <button onClick={() => window.location.reload()} className="underline ml-2">Retry</button>
+            </div>
+          )}
+
           {isLoading ? (
             <div className="space-y-2">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="h-16 skeleton rounded-lg" />
-              ))}
+              {[1, 2, 3, 4, 5].map((i) => <div key={i} className="h-16 skeleton rounded-lg" />)}
             </div>
           ) : (
             <>
-              <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 mb-4">
+              <div className="bg-[rgb(var(--color-surface))] border rounded-xl p-4 mb-4">
                 <ActivityTimeline activities={data?.items || []} />
               </div>
 
               {data && data.pages > 1 && (
                 <div className="flex items-center justify-center gap-2">
-                  <button
-                    onClick={() => setPage((p) => Math.max(1, p - 1))}
-                    disabled={page === 1}
-                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed text-slate-300 text-sm font-medium rounded-md transition-colors"
-                  >
-                    Previous
-                  </button>
-                  <span className="text-sm text-slate-500">
-                    Page {page} of {data.pages}
-                  </span>
-                  <button
-                    onClick={() => setPage((p) => Math.min(data.pages, p + 1))}
-                    disabled={page === data.pages}
-                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed text-slate-300 text-sm font-medium rounded-md transition-colors"
-                  >
-                    Next
-                  </button>
+                  <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1} className="px-4 py-2 bg-[rgb(var(--color-surface))] hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed text-[rgb(var(--color-text))] text-sm font-medium rounded-md transition-colors">Previous</button>
+                  <span className="text-sm text-[rgb(var(--color-text-muted))]">Page {page} of {data.pages}</span>
+                  <button onClick={() => setPage((p) => Math.min(data.pages, p + 1))} disabled={page === data.pages} className="px-4 py-2 bg-[rgb(var(--color-surface))] hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed text-[rgb(var(--color-text))] text-sm font-medium rounded-md transition-colors">Next</button>
                 </div>
               )}
             </>

@@ -2,10 +2,10 @@ import math
 import structlog
 
 from app.core.exceptions import NotFoundError as AppNotFoundError
+from app.models.activity import PaginatedResponse
 from app.models.screenshot import (
     ScreenshotBatchRequest,
     ScreenshotFilter,
-    PaginatedResponse,
 )
 from app.repositories.screenshot_repo import ScreenshotRepository
 from app.services.ai_analysis import VisionAnalysisService

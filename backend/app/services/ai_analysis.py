@@ -1,8 +1,7 @@
 import base64
+import io
 import json
 import logging
-import io
-from typing import Optional
 
 from openai import AsyncOpenAI
 from PIL import Image
