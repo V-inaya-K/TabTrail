@@ -383,8 +383,6 @@ POST /api/v1/screenshots/{screenshot_id}/analyze
 
 ---
 
----
-
 ## 🚀 Deployment
 
 ### Backend (Production)
