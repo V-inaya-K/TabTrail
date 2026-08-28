@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![TabTrail Logo](https://via.placeholder.com/800x200/1e293b/3b82f6?text=TabTrail+%7C+Visual+AI+Browser+Activity+Tracker)
+![TabTrail Logo](tabtrail.png)
 
 **A production-ready SaaS application that transforms browsing activity into AI-powered insights**
 
