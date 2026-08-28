@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![TabTrail Logo](tabtrail.png)
+![TabTrail Logo](tb.png)
 
 **A production-ready SaaS application that transforms browsing activity into AI-powered insights**
 
